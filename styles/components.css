@@ -1,0 +1,1150 @@
+/* =======================================================
+   CyberHub Unified Components Stylesheet (components.css)
+   Deduplicated Shared UI Elements & High-Contrast Typography
+   ======================================================= */
+
+/* 1. Global High-Contrast Text Normalization (All Black Text to White) */
+body,
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b,
+label,
+input,
+select,
+option,
+button,
+table,
+th,
+td,
+li,
+a {
+  color: #ffffff;
+}
+
+*{
+  scrollbar-color: #ff7300 transparent !important;
+  scrollbar-width: thin;
+}
+/* Secondary muted text (bright readable silver-white instead of dark grayish) */
+.text-muted,
+.tech-meta,
+.client-loc,
+.fault-desc,
+.pred-cost,
+.setting-desc,
+.activity-text-wrapper span,
+.profile-subtext {
+  color: #b8c4db !important;
+}
+
+/* Input placeholder text */
+::placeholder {
+  color: #92a2c4 !important;
+  opacity: 1;
+}
+
+/* Ensure inputs, selects & options have dark background and crisp white text */
+input,
+select,
+textarea {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+select option {
+  background-color: #0c1635;
+  color: #ffffff !important;
+}
+
+/* 2. Controls & Search Bars */
+.order-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#orderSearch,
+#techSearch,
+#aiSearch,
+.search-input {
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 115, 0, 0.3);
+  border-radius: 8px;
+  color: #ffffff !important;
+  padding: 8px 14px;
+  font-size: 13px;
+  width: 280px;
+  outline: none;
+  transition: 0.2s border-color, 0.2s box-shadow;
+}
+
+#orderSearch:focus,
+#techSearch:focus,
+#aiSearch:focus,
+.search-input:focus {
+  border-color: var(--app-logo, #ff7300);
+  box-shadow: 0 0 8px rgba(255, 115, 0, 0.3);
+}
+
+/* 3. Filter Bars & Tabs */
+.orders-filter-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.filter-tab {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: var(--app-bg-dark, #01081f);
+  color: #b8c4db;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  user-select: none;
+}
+
+.filter-tab:hover {
+  color: #ffffff !important;
+  border-color: rgba(255, 115, 0, 0.4);
+}
+
+.filter-tab.active {
+  background-color: rgba(255, 115, 0, 0.18);
+  color: var(--app-logo, #ff7300) !important;
+  border-color: var(--app-logo, #ff7300);
+  font-weight: 600;
+}
+
+/* 4. Standardized Table Card & Table Styles */
+.orders-table-wrapper {
+  background-color: var(--app-bg-dark, #01081f);
+  border-radius: 12px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.orders-table th {
+  color: #dbe4f7 !important;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 16px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.orders-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+  font-size: 13px;
+  color: #ffffff !important;
+}
+
+.orders-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.orders-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.order-id {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
+  color: var(--app-logo, #ff7300) !important;
+}
+
+/* 5. Client & Fault Cells */
+.client-cell .client-name {
+  color: #ffffff !important;
+  font-weight: 500;
+  display: block;
+}
+
+.client-cell .client-loc {
+  color: #b8c4db !important;
+  font-size: 11px;
+}
+
+.fault-cell .appliance-tag {
+  display: block;
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+.fault-cell .fault-desc {
+  color: #b8c4db !important;
+  font-size: 11px;
+}
+
+.cost-badge {
+  color: #2ed573 !important;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 6. Technician Cells & Avatars (Standardized Alignment & Clean Spacing) */
+.tech-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  text-align: left;
+}
+
+.tech-cell.centered {
+  justify-content: center;
+}
+
+.tech-cell div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  min-width: 0;
+}
+
+.tech-avatar-wrapper {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 115, 0, 0.4);
+  box-shadow: 0 0 10px rgba(255, 115, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.tech-avatar-img {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  max-width: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  margin: 0 !important;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 115, 0, 0.35);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.orders-table tbody tr:hover .tech-avatar-img {
+  transform: scale(1.06);
+  border-color: var(--app-logo, #ff7300);
+}
+
+.tech-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 115, 0, 0.2);
+  color: var(--app-logo, #ff7300) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(255, 115, 0, 0.4);
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+
+.tech-avatar.green {
+  background-color: rgba(46, 213, 115, 0.2);
+  color: #2ed573 !important;
+  border-color: rgba(46, 213, 115, 0.4);
+}
+
+.tech-name {
+  margin: 0 0 2px 0;
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tech-meta {
+  margin: 0;
+  font-size: 11px;
+  color: #b8c4db !important;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Right-side Technician Profile Drawer Box - Centralized */
+.profile-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  padding: 10px 16px;
+}
+
+.profile-photo-wrapper {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 12px auto;
+  border: 3px solid var(--app-logo, #ff7300);
+  box-shadow: 0 0 16px rgba(255, 115, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-photo-wrapper img {
+  object-fit: cover;
+  object-position: center top;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.profile-text {
+  color: #ffffff !important;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+/* 7. Status Pills & Badges */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.status-pill.pending {
+  background: rgba(255, 165, 2, 0.18);
+  color: #ffa502 !important;
+  border: 1px solid rgba(255, 165, 2, 0.4);
+}
+
+.status-pill.dispatched {
+  background: rgba(255, 115, 0, 0.18);
+  color: #ff8c2b !important;
+  border: 1px solid rgba(255, 115, 0, 0.4);
+}
+
+.status-pill.on-site {
+  background: rgba(52, 152, 219, 0.18);
+  color: #5dade2 !important;
+  border: 1px solid rgba(52, 152, 219, 0.4);
+}
+
+.status-pill.completed {
+  background: rgba(46, 213, 115, 0.18);
+  color: #2ed573 !important;
+  border: 1px solid rgba(46, 213, 115, 0.4);
+}
+
+.status-pill.training {
+  background: rgba(155, 89, 182, 0.18);
+  color: #bb86fc !important;
+  border: 1px solid rgba(155, 89, 182, 0.4);
+}
+
+.cert-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cert-tag {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: #e2e8f0 !important;
+  font-weight: 500;
+}
+
+.rating-stars {
+  color: #ffa502 !important;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.rating-stars span {
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.ai-badge {
+  display: inline-block;
+  background-color: rgba(46, 213, 115, 0.18);
+  color: #2ed573 !important;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+
+/* 8. Action Buttons */
+.btn-dispatch {
+  background-color: var(--app-logo, #ff7300);
+  color: #ffffff !important;
+  border: none;
+  padding: 7px 15px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-dispatch:hover {
+  background-color: #e66700;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 115, 0, 0.35);
+}
+
+.btn-track {
+  background-color: rgba(52, 152, 219, 0.15);
+  color: #5dade2 !important;
+  border: 1px solid rgba(52, 152, 219, 0.4);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-track:hover {
+  background-color: rgba(52, 152, 219, 0.3);
+  color: #ffffff !important;
+  border-color: #3498db;
+}
+
+.btn-outline {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #dbe4f7 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* 9. Shared Metric KPI Cards */
+.ai-metric-card,
+.tech-metric-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.ai-metric-icon,
+.tech-metric-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 10. Time Sort & Date Picker Component (Service Analytics) */
+.analytics-header-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.time-sort-group {
+  display: inline-flex;
+  background-color: var(--app-bg-dark, #01081f);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.time-sort-btn {
+  background: transparent;
+  border: none;
+  color: #b8c4db !important;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.time-sort-btn:hover {
+  color: #ffffff !important;
+}
+
+.time-sort-btn.active {
+  background-color: var(--app-logo, #ff7300);
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(255, 115, 0, 0.3);
+}
+
+.date-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--app-bg-dark, #01081f);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 4px 12px;
+}
+
+.date-picker-wrapper svg {
+  color: var(--app-logo, #ff7300);
+}
+
+.date-picker-input {
+  background: transparent;
+  border: none;
+  color: #ffffff !important;
+  font-family: inherit;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.date-picker-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* 11. Google Maps Telemetry & Live Tracking Section */
+.map-dispatch-card {
+  background-color: var(--app-bg-dark, #01081f);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.map-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.map-card-header h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.live-radar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(46, 213, 115, 0.15);
+  border: 1px solid rgba(46, 213, 115, 0.4);
+  border-radius: 20px;
+  font-size: 11px;
+  color: #2ed573 !important;
+  font-weight: 600;
+}
+
+.radar-ping {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #2ed573;
+  animation: pulse-green 1.5s infinite;
+}
+
+@keyframes pulse-green {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(46, 213, 115, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(46, 213, 115, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(46, 213, 115, 0); }
+}
+
+.map-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .map-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-frame-container {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #020b24;
+}
+
+.map-frame-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  filter: contrast(1.1) brightness(0.9) saturate(1.2);
+}
+
+.map-overlay-stats {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+}
+
+.map-stat-chip {
+  background: rgba(1, 8, 31, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: #ffffff !important;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.map-fleet-roster {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 12px;
+  height: 380px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.map-fleet-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.map-fleet-item:hover,
+.map-fleet-item.selected {
+  background: rgba(255, 115, 0, 0.12);
+  border-color: rgba(255, 115, 0, 0.4);
+}
+
+.fleet-tech-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fleet-tech-details h4 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff !important;
+}
+
+.fleet-tech-details p {
+  margin: 2px 0 0 0;
+  font-size: 10px;
+  color: #b8c4db !important;
+}
+
+/* 15. Operations Manager Log Out Button */
+.btn-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: rgba(231, 76, 60, 0.15);
+  color: #ff6b6b !important;
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: auto;
+}
+
+.btn-logout:hover {
+  background: rgba(231, 76, 60, 0.35);
+  border-color: #ff6b6b;
+  color: #ffffff !important;
+  box-shadow: 0 0 14px rgba(231, 76, 60, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-logout svg {
+  stroke: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.btn-logout:hover svg {
+  transform: translateX(2px);
+}
+
+/* 16. Expandable Feeds & "More" Buttons */
+.feed-expandable {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.feed-expandable.expanded {
+  max-height: 800px;
+  opacity: 1;
+}
+
+.btn-more-feed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 7px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  color: #b8c4db !important;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-more-feed:hover {
+  background: rgba(255, 115, 0, 0.12);
+  border-color: var(--app-logo, #ff7300);
+  color: #ffffff !important;
+}
+
+.btn-more-feed svg {
+  transition: transform 0.25s ease;
+}
+
+.btn-more-feed.active svg {
+  transform: rotate(180deg);
+}
+
+.more-link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  border-radius: 6px;
+  color: #54a0ff !important;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.more-link-btn:hover {
+  background: rgba(52, 152, 219, 0.25);
+  border-color: #54a0ff;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+/* 17. Priority Badges for Dispatch Triage */
+.priority-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priority-pill.critical {
+  background: rgba(231, 76, 60, 0.2);
+  color: #ff6b6b !important;
+  border: 1px solid rgba(231, 76, 60, 0.5);
+  animation: pulseCritical 2s infinite;
+}
+
+@keyframes pulseCritical {
+  0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(231, 76, 60, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+}
+
+.priority-pill.high {
+  background: rgba(255, 115, 0, 0.18);
+  color: #ff9f43 !important;
+  border: 1px solid rgba(255, 115, 0, 0.4);
+}
+
+.priority-pill.normal,
+.priority-pill.medium {
+  background: rgba(52, 152, 219, 0.18);
+  color: #54a0ff !important;
+  border: 1px solid rgba(52, 152, 219, 0.4);
+}
+
+.priority-pill.low {
+  background: rgba(46, 213, 115, 0.15);
+  color: #2ed573 !important;
+  border: 1px solid rgba(46, 213, 115, 0.35);
+}
+
+/* 18. Truck Spare Parts Stock Tags */
+.truck-stock-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.truck-stock-tag.in-stock {
+  background: rgba(46, 213, 115, 0.12);
+  color: #2ed573 !important;
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+
+.truck-stock-tag.hub-stock {
+  background: rgba(255, 165, 2, 0.12);
+  color: #ffa502 !important;
+  border: 1px solid rgba(255, 165, 2, 0.3);
+}
+
+.truck-stock-tag.order-req {
+  background: rgba(231, 76, 60, 0.12);
+  color: #ff6b6b !important;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+/* 19. Dispatcher KPI Ribbon */
+.dispatcher-kpi-ribbon {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media screen and (max-width: 900px) {
+  .dispatcher-kpi-ribbon {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.dispatcher-kpi-card {
+  background: var(--app-container, #0c1635);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dispatcher-kpi-info h3 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: #b8c4db !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dispatcher-kpi-info span {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff !important;
+  margin-top: 4px;
+  display: block;
+}
+
+.dispatcher-kpi-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 20. AI Recommendation & Customer Alert Buttons */
+.ai-match-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(46, 213, 115, 0.18);
+  border: 1px solid #2ed573;
+  color: #2ed573 !important;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.btn-whatsapp-ping {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(37, 211, 102, 0.15);
+  border: 1px solid #25d366;
+  color: #25d366 !important;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-whatsapp-ping:hover {
+  background: #25d366;
+  color: #01081f !important;
+  transform: translateY(-1px);
+}
+
+.van-part-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: #ffffff !important;
+}
+
+/* 21. Perfect Alignment of Completed Repair Services with Assigned Field Technicians */
+.chart-row.two.align-techs-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.chart-row.two.align-techs-row .chart-container-wrapper.big {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 68%;
+}
+
+.chart-row.two.align-techs-row .chart-container.align-techs-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.chart-row.two.align-techs-row .chart-container.align-techs-card .line-chart {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  height: 100%;
+  position: relative;
+  margin-top: 10px;
+}
+
+.chart-row.two.align-techs-row .chart-container.align-techs-card .line-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+  flex: 1;
+}
+
+.chart-row.two.align-techs-row .chart-container-wrapper.small {
+  display: flex;
+  flex-direction: column;
+  width: 32%;
+}
+
+.chart-row.two.align-techs-row .chart-container-wrapper.small .chart-container.applicants {
+  flex: 1;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+/* 22. Service Analytics: Perfect Alignment of Revenue vs Parts Cost & Fault Category Distribution */
+.chart-row.two.analytics-charts-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.chart-row.two.analytics-charts-row .chart-container-wrapper.big {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 65%;
+}
+
+.chart-row.two.analytics-charts-row .chart-container-wrapper.small {
+  display: flex;
+  flex-direction: column;
+  width: 35%;
+}
+
+.chart-row.two.analytics-charts-row .chart-container.analytics-chart-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.chart-row.two.analytics-charts-row .chart-container.analytics-chart-card .line-chart {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
+  height: 100%;
+  position: relative;
+  margin-top: 14px;
+}
+
+.chart-row.two.analytics-charts-row .chart-container.analytics-chart-card .line-chart canvas {
+  width: 100% !important;
+  height: 100% !important;
+  flex: 1;
+}
+
+.chart-row.two.analytics-charts-row .chart-container.analytics-chart-card .doughnut-chart-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 190px;
+  max-height: 220px;
+  position: relative;
+  margin-top: 10px;
+}
+
+.chart-row.two.analytics-charts-row .chart-container.analytics-chart-card .doughnut-chart-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 210px;
+}
+
+.chart-row.two.analytics-charts-row .chart-container.analytics-chart-card .custom-legend {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@media screen and (max-width: 960px) {
+  .chart-row.two.analytics-charts-row {
+    flex-direction: column;
+  }
+  .chart-row.two.analytics-charts-row .chart-container-wrapper.big,
+  .chart-row.two.analytics-charts-row .chart-container-wrapper.small {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* 23. Technician Fleet Table: Precise Column Alignment */
+#techTable th:first-child,
+#techTable td:first-child {
+  width: 250px;
+  min-width: 240px;
+  text-align: left;
+  vertical-align: middle;
+  padding-left: 16px;
+}
+
+#techTable th {
+  vertical-align: middle;
+}
+
+#techTable td {
+  vertical-align: middle;
+}

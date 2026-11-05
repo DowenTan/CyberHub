@@ -1,0 +1,225 @@
+/* =========================================
+   Smart Orders Page Specific Styles
+   (Shared elements imported from components.css)
+   ========================================= */
+
+/* Right Rail AI Elements */
+.order-sidebar-title {
+  padding: 0 16px;
+  margin-top: 10px;
+}
+
+.order-sidebar-title h2 {
+  font-size: 14px;
+  color: #fff;
+  margin: 0 0 6px 0;
+}
+
+.ai-insight-box {
+  margin: 16px;
+  background-color: rgba(255, 115, 0, 0.08);
+  border: 1px solid rgba(255, 115, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.ai-insight-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-logo);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ai-insight-box p {
+  margin: 0;
+  color: #b8c4db;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.ai-insight-box strong {
+  color: #fff;
+}
+
+.tech-roster-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.roster-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.roster-info h4 {
+  margin: 0;
+  color: #fff;
+  font-size: 12px;
+}
+
+.roster-info p {
+  margin: 2px 0 4px 0;
+  color: #b8c4db;
+  font-size: 10px;
+}
+
+.avail-badge {
+  font-size: 10px;
+  border-radius: 8px;
+  padding: 2px 6px;
+}
+
+.avail-badge.free {
+  background: rgba(46, 213, 115, 0.15);
+  color: #2ed573;
+}
+
+.avail-badge.busy {
+  background: rgba(255, 92, 92, 0.15);
+  color: #ff5c5c;
+}
+
+/* Modal Window */
+.dispatch-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(1, 8, 31, 0.75);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dispatch-modal-overlay.show {
+  display: flex;
+}
+
+.dispatch-modal {
+  background: #151c32;
+  border: 1px solid rgba(255, 115, 0, 0.3);
+  width: 440px;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 12px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 16px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #b8c4db;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-order-tag {
+  color: var(--app-logo);
+  font-family: monospace;
+  font-weight: 600;
+  margin: 12px 0;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.modal-label {
+  font-size: 11px;
+  color: #b8c4db;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.modal-val {
+  color: #fff;
+  font-size: 13px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.matched-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 115, 0, 0.2);
+  margin-top: 6px;
+}
+
+.matched-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--app-logo);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.matched-box strong {
+  color: #fff;
+  font-size: 13px;
+  display: block;
+}
+
+.matched-box p {
+  color: #2ed573;
+  margin: 0;
+  font-size: 11px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #b8c4db;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}

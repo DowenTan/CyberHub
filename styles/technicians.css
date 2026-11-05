@@ -1,0 +1,123 @@
+/* =========================================
+   Technicians Fleet Page Specific Styles
+   (Shared elements imported from components.css)
+   ========================================= */
+
+/* Technician KPI Quick Cards */
+.tech-metric-card {
+  background-color: var(--app-bg-dark);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Technician Column Alignment in Fleet Table */
+#techTable th:first-child,
+#techTable td:first-child {
+  width: 250px;
+  min-width: 240px;
+  text-align: left;
+  vertical-align: middle;
+  padding-left: 16px;
+}
+
+.tech-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  text-align: left;
+  width: 100%;
+}
+
+.tech-avatar-img {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  max-width: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid rgba(255, 115, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: block;
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+
+/* Right Profile Panel - Centralized Profile Box */
+.profile-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px 20px;
+}
+
+.profile-photo-wrapper {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 12px auto;
+  border: 3px solid var(--app-logo, #ff7300);
+  box-shadow: 0 0 16px rgba(255, 115, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-photo-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* Live Google Maps Tracking in Technician Drawer */
+.tech-map-live-container {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #020b24;
+  position: relative;
+  height: 200px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.tech-map-live-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  filter: contrast(1.1) brightness(0.9) saturate(1.2);
+}
+
+.tech-live-telemetry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.telemetry-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.telemetry-item span {
+  color: #b8c4db !important;
+  font-size: 10px;
+}
+
+.telemetry-item strong {
+  color: #ffffff !important;
+  font-size: 12px;
+}
