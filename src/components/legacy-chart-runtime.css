@@ -30,45 +30,153 @@
   background: #ff7300;
 }
 
-.line-chart:fullscreen {
-  width: 100vw;
-  height: 100vh;
-  padding: 32px;
-  background: #01081f;
+/* 85% Centered Fullscreen Graph Modal with Dimmed Background & Rounded Border */
+.ch-chart-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(1, 5, 20, 0.82) !important;
+  backdrop-filter: blur(6px) !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.line-chart:fullscreen canvas {
+.ch-chart-modal-window {
+  width: 85vw !important;
+  height: 85vh !important;
+  border-radius: 16px !important;
+  border: 1.5px solid rgba(255, 115, 0, 0.55) !important;
+  background: #01081f !important;
+  padding: 22px !important;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.ch-chart-modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding-bottom: 10px !important;
+}
+
+.ch-chart-modal-title {
+  font: 600 15px Poppins, sans-serif !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.ch-chart-modal-close {
+  background: #ff4757 !important;
+  border: none !important;
+  color: #ffffff !important;
+  font: 600 12px Poppins, sans-serif !important;
+  padding: 6px 14px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: opacity 0.2s !important;
+}
+
+.ch-chart-modal-close:hover {
+  opacity: 0.88 !important;
+}
+
+.ch-chart-modal-body {
+  flex: 1 !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
   width: 100% !important;
   height: 100% !important;
 }
 
+.ch-chart-modal-body .line-chart {
+  width: 100% !important;
+  height: 100% !important;
+  flex: 1 !important;
+  display: flex !important;
+  position: relative !important;
+}
+
+.ch-chart-modal-body canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+/* Floating Exact Value Tooltip */
+.ch-chart-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(1, 8, 31, 0.96) !important;
+  border: 1px solid #ff7300 !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  z-index: 40 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Table Scrollbar & Top Control Row */
 .legacy-table-scroll {
   width: 100%;
-  overflow: auto;
-  scrollbar-color: rgba(255, 115, 0, 0.65) rgba(1, 8, 31, 0.75);
-  scrollbar-width: thin;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  max-height: 520px;
+  scrollbar-color: #ff7300 #01081f !important;
+  scrollbar-width: thin !important;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .legacy-table-scroll::-webkit-scrollbar,
 .app-main::-webkit-scrollbar,
 .app-left::-webkit-scrollbar,
 .app-right-content::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px !important;
+  height: 8px !important;
+  display: block !important;
+}
+
+.legacy-table-scroll::-webkit-scrollbar-track,
+.app-main::-webkit-scrollbar-track,
+.app-left::-webkit-scrollbar-track,
+.app-right-content::-webkit-scrollbar-track {
+  background: #01081f !important;
 }
 
 .legacy-table-scroll::-webkit-scrollbar-thumb,
 .app-main::-webkit-scrollbar-thumb,
 .app-left::-webkit-scrollbar-thumb,
 .app-right-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 115, 0, 0.55);
-  border-radius: 99px;
+  background: #ff7300 !important;
+  border-radius: 4px !important;
+  border: 1px solid #01081f !important;
+}
+
+.legacy-table-scroll::-webkit-scrollbar-thumb:hover,
+.app-main::-webkit-scrollbar-thumb:hover,
+.app-left::-webkit-scrollbar-thumb:hover,
+.app-right-content::-webkit-scrollbar-thumb:hover {
+  background: #ff9f43 !important;
 }
 
 .legacy-table-scroll table {
   min-width: 760px;
+  width: 100%;
+  border-collapse: collapse;
 }
 
+/* Table Category Header & Sortable Style */
 .legacy-sortable-header {
   cursor: pointer;
   user-select: none;
@@ -77,4 +185,27 @@
 
 .legacy-sortable-header:hover {
   color: #ff9f43 !important;
+}
+
+/* Table Control Row on Top of Category */
+.ch-table-control-row th {
+  background: #020a24 !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid rgba(255, 115, 0, 0.25) !important;
+}
+
+.ch-table-category-row th {
+  background: #051340 !important;
+  color: #b8c4db !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Non-Interactive Action Column */
+.ch-non-interactive-th,
+.ch-non-interactive-td,
+.ch-non-interactive-td * {
+  pointer-events: none !important;
+  user-select: none !important;
+  cursor: default !important;
 }

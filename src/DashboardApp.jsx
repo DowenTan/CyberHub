@@ -8,6 +8,7 @@ const Technicians = lazy(() => import('./pages/LegacyTechnicians.jsx'));
 const AiDiagnostics = lazy(() => import('./pages/LegacyAiDiagnostics.jsx'));
 const ServiceAnalytics = lazy(() => import('./pages/LegacyServiceAnalytics.jsx'));
 const PriceSettings = lazy(() => import('./pages/LegacyPriceSettings.jsx'));
+const Settings = lazy(() => import('./pages/Settings.jsx'));
 
 export default function DashboardApp() {
   return (
@@ -20,6 +21,7 @@ export default function DashboardApp() {
           <Route path="/ai-diagnostics" element={<AiDiagnostics />} />
           <Route path="/service-analytics" element={<ServiceAnalytics />} />
           <Route path="/price-settings" element={<PriceSettings />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

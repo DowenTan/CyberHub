@@ -216,7 +216,23 @@ const AdminCopilot = () => {
   };
 
   return (
-    <div className="ch-copilot-widget">
+    <div
+      className="ch-copilot-widget"
+      style={{
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        width: 'auto',
+        height: 'auto',
+        maxWidth: 'calc(100vw - 40px)',
+        maxHeight: 'calc(100vh - 40px)',
+        zIndex: 99999,
+        pointerEvents: 'none',
+        background: 'transparent',
+        backgroundColor: 'transparent',
+        border: 'none',
+      }}
+    >
       {!isOpen ? (
         <button className="ch-copilot-fab" onClick={toggleChat} title="Open CyberHub AI Copilot">
           <span className="ch-pulse-dot"></span>
@@ -236,8 +252,8 @@ const AdminCopilot = () => {
               <button className="ch-mini-btn" onClick={clearHistory} title="Clear Chat">
                 Clear
               </button>
-              <button className="ch-mini-btn" onClick={toggleChat} title="Minimize">
-                —
+              <button className="ch-mini-btn" onClick={toggleChat} title="Close Chatbot">
+                ✕
               </button>
             </div>
           </div>

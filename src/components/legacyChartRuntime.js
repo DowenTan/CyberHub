@@ -99,6 +99,116 @@ function drawLine(chart, context, width, height) {
     });
   });
 
+  // Check if cursor is strictly inside the graph plot area
+  const isInside =
+    chart.hover?.active &&
+    chart.hover.x !== null &&
+    chart.hover.y !== null &&
+    chart.hover.x >= pad.left &&
+    chart.hover.x <= width - pad.right &&
+    chart.hover.y >= pad.top &&
+    chart.hover.y <= height - pad.bottom;
+
+  const firstDataset = visibleDatasets[0];
+  if (isInside && firstDataset?.data?.length > 0) {
+    const primaryPoints = firstDataset.data.map((value, index) => ({
+      x: xValue(index),
+      y: yValue(value),
+      val: value,
+      label: visibleLabels[index] || '',
+    }));
+
+    if (primaryPoints.length > 0) {
+      const clampedX = Math.max(
+        primaryPoints[0].x,
+        Math.min(primaryPoints[primaryPoints.length - 1].x, chart.hover.x)
+      );
+
+      let dotY = primaryPoints[0].y;
+      let exactVal = primaryPoints[0].val;
+      let nearestLabel = primaryPoints[0].label;
+
+      for (let i = 0; i < primaryPoints.length - 1; i++) {
+        const p1 = primaryPoints[i];
+        const p2 = primaryPoints[i + 1];
+        if (clampedX >= p1.x && clampedX <= p2.x) {
+          const t = p2.x === p1.x ? 0 : (clampedX - p1.x) / (p2.x - p1.x);
+          dotY = p1.y + t * (p2.y - p1.y);
+          exactVal = Math.round(p1.val + t * (p2.val - p1.val));
+          nearestLabel = t < 0.5 ? p1.label : p2.label;
+          break;
+        }
+      }
+
+      if (clampedX <= primaryPoints[0].x) {
+        dotY = primaryPoints[0].y;
+        exactVal = primaryPoints[0].val;
+        nearestLabel = primaryPoints[0].label;
+      } else if (clampedX >= primaryPoints[primaryPoints.length - 1].x) {
+        dotY = primaryPoints[primaryPoints.length - 1].y;
+        exactVal = primaryPoints[primaryPoints.length - 1].val;
+        nearestLabel = primaryPoints[primaryPoints.length - 1].label;
+      }
+
+      // 1. Vertical guideline at cursor X
+      context.save();
+      context.setLineDash([4, 4]);
+      context.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      context.lineWidth = 1;
+      context.beginPath();
+      context.moveTo(clampedX, pad.top);
+      context.lineTo(clampedX, pad.top + plotHeight);
+      context.stroke();
+      context.restore();
+
+      // 2. Outer glow ring on the line
+      context.beginPath();
+      context.arc(clampedX, dotY, 8, 0, Math.PI * 2);
+      context.fillStyle = 'rgba(255, 115, 0, 0.35)';
+      context.fill();
+
+      // 3. Solid tracker dot riding along the line
+      context.beginPath();
+      context.arc(clampedX, dotY, 4.5, 0, Math.PI * 2);
+      context.fillStyle = '#ffffff';
+      context.strokeStyle = '#ff7300';
+      context.lineWidth = 2.5;
+      context.fill();
+      context.stroke();
+
+      // 4. Exact Value Tooltip (no zoom cursor)
+      const parentEl = chart.canvas.parentElement;
+      if (parentEl) {
+        if (!chart.tooltipEl) {
+          chart.tooltipEl = document.createElement('div');
+          chart.tooltipEl.className = 'ch-chart-tooltip';
+          chart.tooltipEl.style.position = 'absolute';
+          chart.tooltipEl.style.pointerEvents = 'none';
+          chart.tooltipEl.style.zIndex = '30';
+          chart.tooltipEl.style.background = 'rgba(1, 8, 31, 0.95)';
+          chart.tooltipEl.style.border = '1px solid #ff7300';
+          chart.tooltipEl.style.padding = '8px 12px';
+          chart.tooltipEl.style.borderRadius = '8px';
+          chart.tooltipEl.style.boxShadow = '0 8px 24px rgba(0,0,0,0.6)';
+          parentEl.appendChild(chart.tooltipEl);
+        }
+        chart.tooltipEl.style.display = 'block';
+        chart.tooltipEl.innerHTML = `
+          <div style="color: #ff7300; font-weight: 700; font-size: 11px; margin-bottom: 3px;">${nearestLabel}</div>
+          <div style="font-size: 12px; color: #ffffff;">Exact Value: <strong style="color: #2ed573;">${
+            chart.currency ? 'RM ' + Number(exactVal).toLocaleString() : Number(exactVal).toLocaleString()
+          }</strong></div>
+        `;
+        const tipX = Math.min(width - 160, Math.max(10, clampedX + 14));
+        const tipY = Math.max(10, dotY - 50);
+        chart.tooltipEl.style.left = `${tipX}px`;
+        chart.tooltipEl.style.top = `${tipY}px`;
+      }
+    }
+  } else if (chart.tooltipEl) {
+    chart.tooltipEl.style.display = 'none';
+  }
+
   if (chart.zoom.end - chart.zoom.start < 0.999) {
     context.fillStyle = 'rgba(1,8,31,.82)';
     context.fillRect(width - 73, 9, 64, 20);
@@ -151,26 +261,89 @@ function addZoomControls(chart) {
   parent.style.position = parent.style.position || 'relative';
   const controls = document.createElement('div');
   controls.className = 'legacy-chart-zoom-controls';
-  controls.innerHTML = '<button type="button" aria-label="Zoom in chart">+</button><button type="button" aria-label="Zoom out chart">−</button><button type="button" aria-label="Reset chart zoom">Reset</button><button type="button" aria-label="Open chart fullscreen">Fullscreen</button>';
+  controls.innerHTML =
+    '<button type="button" aria-label="Zoom in chart">+</button><button type="button" aria-label="Zoom out chart">−</button><button type="button" aria-label="Reset chart zoom">Reset</button><button type="button" aria-label="Open chart fullscreen">Fullscreen</button>';
   const [inButton, outButton, resetButton, fullscreenButton] = controls.querySelectorAll('button');
   const zoomIn = () => chart.zoomBy(1.35);
   const zoomOut = () => chart.zoomBy(1 / 1.35);
   const reset = () => chart.resetZoom();
-  const fullscreen = () => {
-    if (document.fullscreenElement === parent) document.exitFullscreen?.();
-    else parent.requestFullscreen?.();
+
+  let modalBackdrop = null;
+  const closeModal = () => {
+    if (!modalBackdrop) return;
+    const placeholder = document.getElementById('chChartPlaceholder_' + chart.id);
+    if (placeholder && placeholder.parentNode) {
+      placeholder.parentNode.insertBefore(parent, placeholder);
+      placeholder.remove();
+    }
+    modalBackdrop.remove();
+    modalBackdrop = null;
+    chart.isFullscreen = false;
+    setTimeout(() => chart.render(), 30);
   };
+
+  const openModal = () => {
+    chart.isFullscreen = true;
+    modalBackdrop = document.createElement('div');
+    modalBackdrop.className = 'ch-chart-modal-backdrop';
+
+    const modalWindow = document.createElement('div');
+    modalWindow.className = 'ch-chart-modal-window';
+
+    const modalHeader = document.createElement('div');
+    modalHeader.className = 'ch-chart-modal-header';
+    modalHeader.innerHTML = `
+      <div class="ch-chart-modal-title">Live Telemetry & Diagnostics Graph</div>
+      <button type="button" class="ch-chart-modal-close" aria-label="Close fullscreen modal">✕ Close</button>
+    `;
+
+    const modalBody = document.createElement('div');
+    modalBody.className = 'ch-chart-modal-body';
+
+    modalWindow.appendChild(modalHeader);
+    modalWindow.appendChild(modalBody);
+    modalBackdrop.appendChild(modalWindow);
+    document.body.appendChild(modalBackdrop);
+
+    const placeholder = document.createElement('div');
+    placeholder.id = 'chChartPlaceholder_' + chart.id;
+    parent.parentNode.insertBefore(placeholder, parent);
+    modalBody.appendChild(parent);
+
+    const closeBtn = modalHeader.querySelector('.ch-chart-modal-close');
+    closeBtn.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+
+    const onEsc = (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        window.removeEventListener('keydown', onEsc);
+      }
+    };
+    window.addEventListener('keydown', onEsc);
+
+    setTimeout(() => chart.render(), 30);
+  };
+
+  const toggleFullscreen = () => {
+    if (modalBackdrop) closeModal();
+    else openModal();
+  };
+
   inButton.addEventListener('click', zoomIn);
   outButton.addEventListener('click', zoomOut);
   resetButton.addEventListener('click', reset);
-  fullscreenButton.addEventListener('click', fullscreen);
+  fullscreenButton.addEventListener('click', toggleFullscreen);
   parent.appendChild(controls);
 
   return () => {
+    closeModal();
     inButton.removeEventListener('click', zoomIn);
     outButton.removeEventListener('click', zoomOut);
     resetButton.removeEventListener('click', reset);
-    fullscreenButton.removeEventListener('click', fullscreen);
+    fullscreenButton.removeEventListener('click', toggleFullscreen);
     controls.remove();
   };
 }
@@ -183,40 +356,66 @@ export function installLegacyChartRuntime() {
     static defaults = { global: {} };
 
     constructor(context, config) {
+      this.id = Math.random().toString(36).substring(2, 9);
       this.canvas = context.canvas;
       this.type = config.type;
       this.data = config.data;
       this.options = config.options || {};
       this.zoom = { start: 0, end: 1, factor: 1 };
       this.pan = { active: false, x: 0 };
+      this.hover = { active: false, x: null, y: null };
       this.currency = Boolean(this.options?.scales?.yAxes?.[0]?.ticks?.callback);
+
       this.onWheel = (event) => {
         if (this.type !== 'line') return;
         event.preventDefault();
         this.zoomBy(event.deltaY < 0 ? 1.35 : 1 / 1.35, event.offsetX / this.canvas.clientWidth);
       };
+
       this.onPointerDown = (event) => {
         if (this.type !== 'line' || this.zoom.factor <= 1) return;
         this.pan = { active: true, x: event.clientX };
         this.canvas.setPointerCapture?.(event.pointerId);
         this.canvas.style.cursor = 'grabbing';
       };
+
       this.onPointerMove = (event) => {
-        if (!this.pan.active) return;
-        const dx = event.clientX - this.pan.x;
-        this.pan.x = event.clientX;
-        this.panByPixels(dx);
+        if (this.pan.active) {
+          const dx = event.clientX - this.pan.x;
+          this.pan.x = event.clientX;
+          this.panByPixels(dx);
+          return;
+        }
+        const rect = this.canvas.getBoundingClientRect();
+        this.hover = {
+          active: true,
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        };
+        this.render();
       };
+
       this.onPointerUp = () => {
         this.pan.active = false;
-        this.canvas.style.cursor = this.type === 'line' ? 'zoom-in' : 'default';
+        this.canvas.style.cursor = 'default';
       };
+
+      this.onPointerLeave = () => {
+        this.hover = { active: false, x: null, y: null };
+        if (this.tooltipEl) {
+          this.tooltipEl.style.display = 'none';
+        }
+        this.render();
+      };
+
       this.canvas.addEventListener('wheel', this.onWheel, { passive: false });
       this.canvas.addEventListener('pointerdown', this.onPointerDown);
       this.canvas.addEventListener('pointermove', this.onPointerMove);
       this.canvas.addEventListener('pointerup', this.onPointerUp);
       this.canvas.addEventListener('pointercancel', this.onPointerUp);
-      this.canvas.style.cursor = this.type === 'line' ? 'zoom-in' : 'default';
+      this.canvas.addEventListener('pointerleave', this.onPointerLeave);
+      this.canvas.style.cursor = 'default';
+
       this.removeControls = addZoomControls(this);
       resizeObserver.observe(this.canvas);
       charts.push(this);
@@ -278,6 +477,8 @@ export function installLegacyChartRuntime() {
       this.canvas.removeEventListener('pointermove', this.onPointerMove);
       this.canvas.removeEventListener('pointerup', this.onPointerUp);
       this.canvas.removeEventListener('pointercancel', this.onPointerUp);
+      this.canvas.removeEventListener('pointerleave', this.onPointerLeave);
+      this.tooltipEl?.remove();
       this.removeControls();
       resizeObserver.unobserve(this.canvas);
     }

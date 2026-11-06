@@ -1,12 +1,59 @@
 import { Link } from 'react-router-dom';
 import { useDashboardStore } from '../store/useDashboardStore.js';
+import SmartTable from '../components/SmartTable.jsx';
+import InteractiveGraph from '../components/InteractiveGraph.jsx';
 
 const CommandCenter = () => {
-  const { orders, technicians, globalPricing, diagnosticsLogs } = useDashboardStore();
+  const { orders, technicians, globalPricing, addOrder } = useDashboardStore();
 
   const pendingCount = orders.filter((o) => o.status === 'PENDING').length;
   const activeTechs = technicians.filter((t) => t.status !== 'OFFLINE').length;
   const totalRevenueEst = orders.reduce((sum, o) => sum + o.aiEstimate, 0);
+
+  const handleQuickAddOrder = () => {
+    const nextId = `ORD-${887 + orders.length}`;
+    const nowStr = new Date().toISOString().slice(0, 16).replace('T', ' ');
+    addOrder({
+      id: nextId,
+      time: nowStr,
+      customer: 'Walk-In Customer',
+      appliance: 'Midea 1.5HP Split AC',
+      issue: 'Compressor fan not spinning',
+      location: 'Ampang Jaya',
+      aiEstimate: 165.0,
+      status: 'PENDING',
+      assignedTech: 'Unassigned',
+    });
+  };
+
+  const columns = [
+    { key: 'id', label: 'Order ID', className: 'accent-text mono' },
+    { key: 'time', label: 'Time', className: 'mono' },
+    { key: 'customer', label: 'Customer', sortType: 'alphabetical' },
+    {
+      key: 'applianceIssue',
+      label: 'Appliance & Issue',
+      sortType: 'alphabetical',
+      getValue: (o) => `${o.appliance} ${o.issue}`,
+      render: (o) => (
+        <div>
+          <strong>{o.appliance}</strong>
+          <div className="sub-cell">{o.issue}</div>
+        </div>
+      ),
+    },
+    { key: 'location', label: 'Zone', sortType: 'alphabetical' },
+    {
+      key: 'aiEstimate',
+      label: 'Estimate (RM)',
+      render: (o) => <span className="mono">RM {o.aiEstimate.toFixed(2)}</span>,
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (o) => <span className={`status-pill ${o.status.toLowerCase()}`}>{o.status}</span>,
+    },
+  ];
 
   return (
     <div className="page-wrapper">
@@ -16,7 +63,7 @@ const CommandCenter = () => {
           <p className="subtitle">Live operational telemetry across Klang Valley repair zones.</p>
         </div>
         <Link to="/smart-orders" className="btn-primary" style={{ textDecoration: 'none' }}>
-          Manage Dispatch Queue ({pendingCount})
+          Open Dispatch Queue ({pendingCount})
         </Link>
       </div>
 
@@ -40,54 +87,22 @@ const CommandCenter = () => {
         </div>
       </div>
 
-      <div className="two-col-grid">
-        <div className="ch-card">
-          <div className="section-title-row">
-            <h3>Recent Smart Orders</h3>
-            <Link to="/smart-orders" className="text-link">View All →</Link>
-          </div>
-          <table className="ch-table">
-            <thead>
-              <tr>
-                <th>Order</th>
-                <th>Appliance</th>
-                <th>Zone</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((o) => (
-                <tr key={o.id}>
-                  <td className="accent-text">{o.id}</td>
-                  <td>{o.appliance}</td>
-                  <td>{o.location}</td>
-                  <td>
-                    <span className={`status-pill ${o.status.toLowerCase()}`}>{o.status}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <div style={{ marginBottom: '20px' }}>
+        <InteractiveGraph title="Live Revenue & Order Ticker" compact />
+      </div>
 
-        <div className="ch-card">
-          <div className="section-title-row">
-            <h3>Latest AI Fault Assessments</h3>
-            <Link to="/ai-diagnostics" className="text-link">Open Diagnostics →</Link>
-          </div>
-          <div className="stack-list">
-            {diagnosticsLogs.slice(0, 3).map((log) => (
-              <div key={log.id} className="list-item-box">
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <strong>{log.appliance}</strong>
-                  <span className="green-text">{log.confidence}% Confidence</span>
-                </div>
-                <p style={{ margin: '4px 0', fontSize: '12px', color: '#9ca3af' }}>{log.predictedFault}</p>
-                <span style={{ fontSize: '11px', color: '#ff7300' }}>Est: {log.estCost}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="ch-card" style={{ padding: 0, overflow: 'hidden' }}>
+        <SmartTable
+          columns={columns}
+          data={orders}
+          rowKey="id"
+          defaultSortKey="time"
+          defaultSortOrder="desc"
+          onAddNew={handleQuickAddOrder}
+          addNewLabel="+ Add New Order"
+          searchPlaceholder="Search orders, appliances, time, or zone..."
+          maxHeight="380px"
+        />
       </div>
     </div>
   );

@@ -68,7 +68,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: border 0.25s ease, box-shadow 0.25s ease;
 }
+
+/* Synced Holographic Avatar Frames */
+.profile-photo-wrapper.frame-none { border: 2px solid rgba(255, 255, 255, 0.25) !important; box-shadow: none !important; }
+.profile-photo-wrapper.frame-neon-orange { border: 3px solid #ff7300 !important; box-shadow: 0 0 16px rgba(255, 115, 0, 0.85) !important; }
+.profile-photo-wrapper.frame-emerald-pulse { border: 3px solid #2ed573 !important; box-shadow: 0 0 16px rgba(46, 213, 115, 0.85) !important; }
+.profile-photo-wrapper.frame-gold-exec { border: 3px double #f1c40f !important; box-shadow: 0 0 18px rgba(241, 196, 15, 0.8) !important; }
+.profile-photo-wrapper.frame-cyber-cyan { border: 3px solid #00d2d3 !important; box-shadow: 0 0 18px rgba(0, 210, 211, 0.85) !important; }
+.profile-photo-wrapper.frame-crimson-glow { border: 3px solid #ff4757 !important; box-shadow: 0 0 18px rgba(255, 71, 87, 0.85) !important; }
 
 .profile-photo-wrapper img {
   width: 100%;
