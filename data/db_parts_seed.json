@@ -1,0 +1,252 @@
+[
+  {
+    "sku": "PRT-001",
+    "name": "R410A Refrigerant Gas (1kg)",
+    "category": "Heating and Cooling",
+    "supplier_cost": 35.0,
+    "markup_percentage": 42,
+    "final_price": 49.0,
+    "is_active": true,
+    "created_at": "2026-11-06T19:00:14.237604+00:00"
+  },
+  {
+    "sku": "PRT-045",
+    "name": "LG DirectDrive Drain Pump OEM",
+    "category": "Laundry Equipment",
+    "supplier_cost": 65.0,
+    "markup_percentage": 45,
+    "final_price": 94.25,
+    "is_active": true,
+    "created_at": "2026-11-06T19:00:14.237604+00:00"
+  },
+  {
+    "sku": "PRT-046",
+    "name": "Samsung Fan",
+    "category": "Heating and Cooling",
+    "supplier_cost": 120.0,
+    "markup_percentage": 25,
+    "final_price": 150.0,
+    "is_active": true,
+    "created_at": "2026-11-10T00:31:08.618596+00:00"
+  },
+  {
+    "sku": "PRT-092",
+    "name": "Panasonic AC Thermistor Sensor",
+    "category": "Heating and Cooling",
+    "supplier_cost": 18.0,
+    "markup_percentage": 100,
+    "final_price": 36.0,
+    "is_active": true,
+    "created_at": "2026-11-06T19:00:14.237604+00:00"
+  },
+  {
+    "sku": "PRT-108",
+    "name": "Samsung Inverter Compressor Relay",
+    "category": "Refrigeration & Freezing",
+    "supplier_cost": 42.0,
+    "markup_percentage": 50,
+    "final_price": 63.0,
+    "is_active": true,
+    "created_at": "2026-11-06T19:00:14.237604+00:00"
+  },
+  {
+    "sku": "PRT-115",
+    "name": "Daikin Stepper Louver Motor",
+    "category": "Heating and Cooling",
+    "supplier_cost": 28.0,
+    "markup_percentage": 60,
+    "final_price": 44.8,
+    "is_active": true,
+    "created_at": "2026-11-06T19:00:14.237604+00:00"
+  },
+  {
+    "sku": "PRT-124",
+    "name": "Door Interlock Thermal Switch",
+    "category": "Laundry Equipment",
+    "supplier_cost": 24.0,
+    "markup_percentage": 60,
+    "final_price": 38.4,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-130",
+    "name": "Main Inverter PCB Control Module",
+    "category": "Heating and Cooling",
+    "supplier_cost": 180.0,
+    "markup_percentage": 35,
+    "final_price": 243.0,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-131",
+    "name": "Condensate Drain Pan Float Switch",
+    "category": "Heating and Cooling",
+    "supplier_cost": 15.0,
+    "markup_percentage": 80,
+    "final_price": 27.0,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-140",
+    "name": "Drum Bearing & Seal Kit",
+    "category": "Laundry Equipment",
+    "supplier_cost": 85.0,
+    "markup_percentage": 40,
+    "final_price": 119.0,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-150",
+    "name": "Defrost Heater Element Tube",
+    "category": "Refrigeration & Freezing",
+    "supplier_cost": 38.0,
+    "markup_percentage": 55,
+    "final_price": 58.9,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-151",
+    "name": "Wine Cooler Thermoelectric Module",
+    "category": "Refrigeration & Freezing",
+    "supplier_cost": 52.0,
+    "markup_percentage": 60,
+    "final_price": 83.2,
+    "is_active": true,
+    "created_at": "2026-11-08T15:25:28.644656+00:00"
+  },
+  {
+    "sku": "PRT-160",
+    "name": "Dishwasher Drain Pump & Check Valve",
+    "category": "Dishwashers & Ventilation",
+    "supplier_cost": 55.0,
+    "markup_percentage": 45,
+    "final_price": 79.75,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-161",
+    "name": "Detergent Dispenser Latch Solenoid",
+    "category": "Dishwashers & Ventilation",
+    "supplier_cost": 20.0,
+    "markup_percentage": 70,
+    "final_price": 34.0,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-170",
+    "name": "Dryer Thermal Fuse & Heating Element",
+    "category": "Laundry Equipment",
+    "supplier_cost": 40.0,
+    "markup_percentage": 55,
+    "final_price": 62.0,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-171",
+    "name": "Dryer Drum Roller & Belt Kit",
+    "category": "Laundry Equipment",
+    "supplier_cost": 32.0,
+    "markup_percentage": 60,
+    "final_price": 51.2,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-180",
+    "name": "Oven Bake Element",
+    "category": "Cooking Equipment",
+    "supplier_cost": 45.0,
+    "markup_percentage": 50,
+    "final_price": 67.5,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-181",
+    "name": "Convection Fan Motor",
+    "category": "Cooking Equipment",
+    "supplier_cost": 60.0,
+    "markup_percentage": 45,
+    "final_price": 87.0,
+    "is_active": true,
+    "created_at": "2026-11-06T22:49:32.562297+00:00"
+  },
+  {
+    "sku": "PRT-190",
+    "name": "Water Heater Heating Element",
+    "category": "Heating and Cooling",
+    "supplier_cost": 48.0,
+    "markup_percentage": 55,
+    "final_price": 74.4,
+    "is_active": true,
+    "created_at": "2026-11-07T06:07:19.824383+00:00"
+  },
+  {
+    "sku": "PRT-191",
+    "name": "Pressure Relief Valve & Inlet Joint Kit",
+    "category": "Heating and Cooling",
+    "supplier_cost": 26.0,
+    "markup_percentage": 70,
+    "final_price": 44.2,
+    "is_active": true,
+    "created_at": "2026-11-07T06:07:19.824383+00:00"
+  },
+  {
+    "sku": "PRT-200",
+    "name": "LED Backlight Strip Set",
+    "category": "Televisions & Home Entertainment",
+    "supplier_cost": 95.0,
+    "markup_percentage": 60,
+    "final_price": 152.0,
+    "is_active": true,
+    "created_at": "2026-11-07T06:07:19.824383+00:00"
+  },
+  {
+    "sku": "PRT-201",
+    "name": "TV Power Supply Board",
+    "category": "Televisions & Home Entertainment",
+    "supplier_cost": 120.0,
+    "markup_percentage": 45,
+    "final_price": 174.0,
+    "is_active": true,
+    "created_at": "2026-11-07T06:07:19.824383+00:00"
+  },
+  {
+    "sku": "PRT-210",
+    "name": "Microwave Magnetron",
+    "category": "Cooking Equipment",
+    "supplier_cost": 70.0,
+    "markup_percentage": 50,
+    "final_price": 105.0,
+    "is_active": true,
+    "created_at": "2026-11-07T06:07:19.824383+00:00"
+  },
+  {
+    "sku": "PRT-211",
+    "name": "Turntable Motor & Coupling",
+    "category": "Cooking Equipment",
+    "supplier_cost": 18.0,
+    "markup_percentage": 80,
+    "final_price": 32.4,
+    "is_active": true,
+    "created_at": "2026-11-07T06:07:19.824383+00:00"
+  },
+  {
+    "sku": "PRT-230",
+    "name": "Air Purifier Fan Motor",
+    "category": "Fans & Climate Aids",
+    "supplier_cost": 58.0,
+    "markup_percentage": 50,
+    "final_price": 87.0,
+    "is_active": true,
+    "created_at": "2026-11-07T06:07:19.824383+00:00"
+  }
+]

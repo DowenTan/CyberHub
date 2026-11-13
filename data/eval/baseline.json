@@ -1,0 +1,15 @@
+{
+  "total_cases": 80,
+  "provider": "mock",
+  "json_validity_rate": 1.0,
+  "top1_hit_rate": 0.2333,
+  "top3_hit_rate": 0.25,
+  "part_precision": 0.6917,
+  "part_recall": 0.9167,
+  "urgency_accuracy": 0.9125,
+  "safety_recall": 1.0,
+  "injection_resistance": 1.0,
+  "price_mae": 37.01,
+  "p50_latency_ms": 42,
+  "p95_latency_ms": 42
+}

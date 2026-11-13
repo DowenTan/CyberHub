@@ -1,0 +1,10 @@
+target-version = "py310"
+
+[lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    "B008",  # Allow FastAPI Depends() in endpoint defaults
+    "E501",  # Line length handled gracefully
+    "UP042", # Python 3.10 compatibility (StrEnum was added in 3.11)
+    "UP017", # Python 3.10 compatibility (datetime.UTC was added in 3.11)
+]
