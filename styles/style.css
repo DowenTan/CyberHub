@@ -14,6 +14,7 @@
   --app-logo: #ff7300;
   --app-accent-hover: #e06000;
   --color-light: rgba(255, 115, 0, 0.15);
+  --app-accent: #0B6DAE;
   
   --nav-link: #cbd5e1;
   --nav-link-active: #fff;
@@ -33,10 +34,10 @@
 
 body {
   height: 100vh;
-  width: 100%;
+  width: 100vw;
   overflow: hidden;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   font-family: "Poppins", sans-serif;
   background-color: #050e2d;
   color: #ffffff;
@@ -44,21 +45,30 @@ body {
 }
 
 .app-container {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  max-width: 100vw;
+  min-width: 100vw;
+  height: 100vh;
   display: flex;
   position: relative;
-  max-width: 1680px;
+  margin: 0;
+  padding: 0;
 }
 
 .app-left {
   flex-basis: 240px;
+  min-width: 240px;
+  width: 240px;
   background-color: var(--app-bg-dark);
-  height: 100%;
+  height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 24px 0;
   transition: all 0.4s ease-in;
+  flex-shrink: 0;
+  position: relative;
+  left: 0;
+  margin: 0;
 }
 
 .app-left.show {
@@ -67,10 +77,11 @@ body {
 }
 
 .app-main {
-  flex: 1;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  flex: 1 1 0%;
+  min-width: 0;
+  height: 100vh;
+  overflow-y: scroll;
+  overflow-x: auto;
   background-color: var(--app-bg-light);
   padding: 24px;
   background: radial-gradient(circle, #051340 1%, #040f32 100%);
@@ -78,14 +89,19 @@ body {
 
 .app-right {
   flex-basis: 320px;
+  min-width: 320px;
   width: 320px;
   background-color: var(--app-bg-dark);
-  height: 100%;
+  height: 100vh;
   padding: 64px 0 0 0;
   display: flex;
   flex-direction: column;
   position: relative;
   transition: all 0.4s ease-in;
+  flex-shrink: 0;
+  margin-left: auto;
+  right: 0;
+  margin-right: 0;
 }
 
 .app-right:before {
@@ -383,6 +399,7 @@ button {
 .bar-progress {
   height: 6px;
   display: inline-block;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bar-progress.applications {
@@ -486,6 +503,92 @@ button {
   border-radius: 50%;
   margin-bottom: 12px;
   border: 2px solid var(--app-logo);
+  transition: border 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Synced Holographic Avatar Frames */
+.profile-photo-wrapper.frame-none,
+.ch-avatar-wrapper.frame-none,
+.frame-none {
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: none !important;
+}
+
+.profile-photo-wrapper.frame-neon-orange,
+.ch-avatar-wrapper.frame-neon-orange,
+.frame-neon-orange {
+  border: 3px solid #ff7300 !important;
+  box-shadow: 0 0 16px rgba(255, 115, 0, 0.85) !important;
+}
+
+.profile-photo-wrapper.frame-emerald-pulse,
+.ch-avatar-wrapper.frame-emerald-pulse,
+.frame-emerald-pulse {
+  border: 3px solid #2ed573 !important;
+  box-shadow: 0 0 16px rgba(46, 213, 115, 0.85) !important;
+}
+
+.profile-photo-wrapper.frame-gold-exec,
+.ch-avatar-wrapper.frame-gold-exec,
+.frame-gold-exec {
+  border: 3px double #f1c40f !important;
+  box-shadow: 0 0 18px rgba(241, 196, 15, 0.8) !important;
+}
+
+.profile-photo-wrapper.frame-cyber-cyan,
+.ch-avatar-wrapper.frame-cyber-cyan,
+.frame-cyber-cyan {
+  border: 3px solid #00d2d3 !important;
+  box-shadow: 0 0 18px rgba(0, 210, 211, 0.85) !important;
+}
+
+.profile-photo-wrapper.frame-crimson-glow,
+.ch-avatar-wrapper.frame-crimson-glow,
+.frame-crimson-glow {
+  border: 3px solid #ff4757 !important;
+  box-shadow: 0 0 18px rgba(255, 71, 87, 0.85) !important;
+}
+
+.profile-photo-wrapper.frame-amethyst-void,
+.ch-avatar-wrapper.frame-amethyst-void,
+.frame-amethyst-void {
+  border: 3px solid #a855f7 !important;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.85) !important;
+}
+
+.profile-photo-wrapper.frame-arctic-frost,
+.ch-avatar-wrapper.frame-arctic-frost,
+.frame-arctic-frost {
+  border: 3px solid #38bdf8 !important;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.9), inset 0 0 6px rgba(56, 189, 248, 0.4) !important;
+}
+
+.profile-photo-wrapper.frame-solar-flare,
+.ch-avatar-wrapper.frame-solar-flare,
+.frame-solar-flare {
+  border: 3px solid #ff9f43 !important;
+  box-shadow: 0 0 18px rgba(255, 159, 67, 0.9) !important;
+}
+
+.profile-photo-wrapper.frame-quantum-prism,
+.ch-avatar-wrapper.frame-quantum-prism,
+.frame-quantum-prism {
+  border: 3px solid #ec4899 !important;
+  box-shadow: 0 0 18px rgba(236, 72, 153, 0.85), 0 0 30px rgba(99, 102, 241, 0.5) !important;
+}
+
+.profile-photo-wrapper.frame-toxic-hazard,
+.ch-avatar-wrapper.frame-toxic-hazard,
+.frame-toxic-hazard {
+  border: 3px solid #a6e22e !important;
+  box-shadow: 0 0 18px rgba(166, 226, 46, 0.9) !important;
+}
+
+.profile-photo-wrapper.frame-stealth-carbon,
+.ch-avatar-wrapper.frame-stealth-carbon,
+.frame-stealth-carbon {
+  border: 3px dashed #64748b !important;
+  box-shadow: 0 0 10px rgba(100, 116, 139, 0.6) !important;
 }
 
 .profile-photo-wrapper img {

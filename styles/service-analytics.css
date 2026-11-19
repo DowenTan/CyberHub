@@ -108,3 +108,20 @@
     width: 100%;
   }
 }
+
+/* Add scrollbar to service analytics */
+.app-main,
+.app-main:has(#regionalHubsTable),
+.app-main:has(.chart-row.four),
+.app-main:has(.analytics-charts-row) {
+  overflow-y: scroll !important;
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7300 #01081f !important;
+}
+
+.orders-table-wrapper {
+  max-height: calc(100vh - 225px) !important;
+  height: auto !important;
+  min-height: 420px !important;
+}

@@ -223,3 +223,9 @@
   font-size: 12px;
   cursor: pointer;
 }
+
+/* Smart Orders: Increase table height by 1 row (~50px: 275px - 50px = 225px) */
+.orders-table-wrapper {
+  max-height: calc(100vh - 225px) !important;
+  height: calc(100vh - 225px) !important;
+}

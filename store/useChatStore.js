@@ -19,6 +19,20 @@ export const useChatStore = create(
         set((state) => ({
           messages: [...state.messages, { ...msg, timestamp: new Date().toISOString() }],
         })),
+      deleteMessageTurn: (userMsgIndex) =>
+        set((state) => {
+          const msgs = [...state.messages];
+          if (userMsgIndex < 0 || userMsgIndex >= msgs.length) return state;
+          let countToDelete = 1;
+          while (
+            userMsgIndex + countToDelete < msgs.length &&
+            msgs[userMsgIndex + countToDelete].role === 'assistant'
+          ) {
+            countToDelete++;
+          }
+          msgs.splice(userMsgIndex, countToDelete);
+          return { messages: msgs };
+        }),
       clearHistory: () =>
         set({
           messages: [

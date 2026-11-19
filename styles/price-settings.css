@@ -173,3 +173,19 @@ input:checked + .slider:before {
     grid-template-columns: 1fr;
   }
 }
+
+/* Add scrollbar to price settings */
+.app-main,
+.app-main:has(#partsTable),
+.app-main:has(.settings-grid) {
+  overflow-y: scroll !important;
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #ff7300 #01081f !important;
+}
+
+.orders-table-wrapper {
+  max-height: calc(100vh - 225px) !important;
+  height: auto !important;
+  min-height: 480px !important;
+}

@@ -1,5 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useDashboardStore } from '../store/useDashboardStore.js';
+import { useAuthStore } from '../store/useAuthStore.js';
+import { inviteStaffUser, getBranches } from '../lib/api.js';
+import {
+  getNavKeybinds,
+  saveNavKeybinds,
+  resetNavKeybinds,
+  DEFAULT_KEYBINDS,
+} from '../lib/navKeybinds.js';
+import AdminAnomalyDrawer from '../components/AdminAnomalyDrawer.jsx';
 
 const AVATAR_FRAMES = [
   { id: 'none', name: 'No Frame', desc: 'Clean minimal border' },
@@ -8,31 +18,310 @@ const AVATAR_FRAMES = [
   { id: 'gold-exec', name: 'Royal Gold Executive', desc: 'Metallic prestige dual-ring' },
   { id: 'cyber-cyan', name: 'Plasma Cyan Glitch', desc: 'High-voltage electric blue aura' },
   { id: 'crimson-glow', name: 'Crimson Overlord', desc: 'Deep red tactical command ring' },
+  { id: 'amethyst-void', name: 'Amethyst Void', desc: 'Deep purple cosmic energy ring' },
+  { id: 'arctic-frost', name: 'Arctic Frost', desc: 'Sub-zero crystal blue luminescence' },
+  { id: 'solar-flare', name: 'Solar Flare', desc: 'Blazing amber corona & solar glow' },
+  { id: 'quantum-prism', name: 'Quantum Prism', desc: 'Multi-spectrum holographic neon' },
+  { id: 'toxic-hazard', name: 'Toxic Hazard', desc: 'High-intensity radioactive neon lime' },
+  { id: 'stealth-carbon', name: 'Stealth Carbon', desc: 'Tactical matte carbon fiber weave' },
 ];
 
 const PRESET_AVATARS = [
-  { label: 'Main Logo', url: '/image/MainLogo.png' },
+  {
+    label: 'Command Center User',
+    url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkfWqPyP7NACihrv0Co-eBcCSwXtcfzBBbrijdzccchojCUZ7t_M_oJrA&s=10',
+  },
+  { label: 'CyberHub Logo', url: '/image/MainLogo.png' },
   { label: 'Logo 1', url: '/image/Logo1.png' },
   { label: 'Logo 2', url: '/image/Logo2.png' },
   { label: 'Logo 3', url: '/image/Logo3.png' },
 ];
 
-const Settings = () => {
-  const { userProfile, updateUserProfile } = useDashboardStore();
+const NAV_ITEMS = [
+  {
+    path: '/',
+    label: 'Command Center',
+    renderIcon: () => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="feather feather-columns"
+      >
+        <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18" />
+      </svg>
+    ),
+  },
+  {
+    path: '/smart-orders',
+    label: 'Smart Orders',
+    renderIcon: () => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="feather feather-tool"
+      >
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+      </svg>
+    ),
+  },
+  {
+    path: '/technicians',
+    label: 'Technicians',
+    renderIcon: () => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="feather feather-users"
+      >
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  {
+    path: '/chats',
+    label: 'Chats',
+    renderIcon: () => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="feather feather-message-square"
+      >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+  {
+    path: '/ai-diagnostics',
+    label: 'AI Diagnostics',
+    renderIcon: () => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="feather feather-cpu"
+      >
+        <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
+        <rect x="9" y="9" width="6" height="6" />
+        <line x1="9" y1="1" x2="9" y2="4" />
+        <line x1="15" y1="1" x2="15" y2="4" />
+        <line x1="9" y1="20" x2="9" y2="23" />
+        <line x1="15" y1="20" x2="15" y2="23" />
+        <line x1="20" y1="9" x2="23" y2="9" />
+        <line x1="20" y1="14" x2="23" y2="14" />
+        <line x1="1" y1="9" x2="4" y2="9" />
+        <line x1="1" y1="14" x2="4" y2="14" />
+      </svg>
+    ),
+  },
+  {
+    path: '/service-analytics',
+    label: 'Service Analytics',
+    renderIcon: () => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="feather feather-pie-chart"
+      >
+        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+        <path d="M22 12A10 10 0 0 0 12 2v10z" />
+      </svg>
+    ),
+  },
+  {
+    path: '/price-settings',
+    label: 'Price Settings',
+    renderIcon: () => (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="feather feather-settings"
+      >
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+    ),
+  },
+];
 
-  const [username, setUsername] = useState(userProfile.username);
-  const [email, setEmail] = useState(userProfile.email);
-  const [selectedFrame, setSelectedFrame] = useState(userProfile.avatarFrame);
+const DEFAULT_CMD_USER = {
+  username: 'Super Admin',
+  role: 'Superadmin',
+  email: 'admin@cyberhub.my',
+  avatarUrl:
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+  avatarFrame: 'neon-orange',
+};
+
+const Settings = () => {
+  const navigate = useNavigate();
+  const { userProfile, updateUserProfile } = useDashboardStore();
+  const { profile, signOut } = useAuthStore();
+
+  const canInvite = profile?.is_super_admin || profile?.roles?.includes('admin');
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteName, setInviteName] = useState('');
+  const [inviteRole, setInviteRole] = useState('technician');
+  const [inviteBranch, setInviteBranch] = useState('');
+  const [branchesList, setBranchesList] = useState([]);
+  const [inviteLoading, setInviteLoading] = useState(false);
+
+  useEffect(() => {
+    if (canInvite) {
+      getBranches()
+        .then((res) => {
+          if (res?.branches) setBranchesList(res.branches);
+        })
+        .catch(() => {});
+    }
+  }, [canInvite]);
+
+  const handleInviteSubmit = async (e) => {
+    e.preventDefault();
+    if (!inviteEmail || !inviteName) return;
+    setInviteLoading(true);
+    try {
+      await inviteStaffUser({
+        email: inviteEmail,
+        full_name: inviteName,
+        role: inviteRole,
+        branch_id: inviteBranch || null,
+      });
+      showToast(`Invitation sent to ${inviteEmail} successfully!`, 'success');
+      setInviteEmail('');
+      setInviteName('');
+    } catch (err) {
+      showToast(err.message || 'Failed to send invite', 'error');
+    } finally {
+      setInviteLoading(false);
+    }
+  };
+
+  const [username, setUsername] = useState(userProfile?.username || DEFAULT_CMD_USER.username);
+  const [email, setEmail] = useState(userProfile?.email || DEFAULT_CMD_USER.email);
+  const [role, setRole] = useState(userProfile?.role || DEFAULT_CMD_USER.role);
+  const [selectedFrame, setSelectedFrame] = useState(userProfile?.avatarFrame || 'neon-orange');
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPasswords, setShowPasswords] = useState(false);
+
+  const [autoDispatch, setAutoDispatch] = useState(true);
+  const [slaAlerts, setSlaAlerts] = useState(true);
+  const [whatsAppSync, setWhatsAppSync] = useState(true);
+  const [soundEffects, setSoundEffects] = useState(false);
+
   const [statusMsg, setStatusMsg] = useState({ text: '', type: '' });
+  const [showAnomalyDrawer, setShowAnomalyDrawer] = useState(false);
+
+  // Navigation Keybindings State (1 to 7)
+  const [navKeybinds, setNavKeybinds] = useState(getNavKeybinds);
+
+  useEffect(() => {
+    const handleUpdate = () => setNavKeybinds(getNavKeybinds());
+    window.addEventListener('cyberhub:keybinds-updated', handleUpdate);
+    return () => window.removeEventListener('cyberhub:keybinds-updated', handleUpdate);
+  }, []);
+
+  const handleKeybindChange = (id, newKey) => {
+    const cleanKey = newKey.slice(-1); // Take latest single character
+    const updated = navKeybinds.map((kb) => (kb.id === id ? { ...kb, key: cleanKey } : kb));
+    setNavKeybinds(updated);
+
+    const map = {};
+    updated.forEach((kb) => {
+      map[kb.id] = kb.key;
+    });
+    saveNavKeybinds(map);
+    const target = updated.find((k) => k.id === id);
+    showToast(`Keybind updated for ${target?.label} to '${cleanKey.toUpperCase() || 'none'}'`);
+  };
+
+  const handleResetKeybinds = () => {
+    resetNavKeybinds();
+    setNavKeybinds(DEFAULT_KEYBINDS.map((item) => ({ ...item, key: item.defaultKey })));
+    showToast('Reset all navigation keybindings to defaults (1 to 7).');
+  };
+
+  // Sync user settings with the current authenticated superadmin/profile
+  useEffect(() => {
+    if (profile) {
+      const superRole = profile.is_super_admin ? 'Superadmin' : (profile.roles?.[0] || 'Superadmin');
+      const superName = profile.full_name || 'Super Admin';
+      const superEmail = profile.email || 'admin@cyberhub.my';
+      setUsername(superName);
+      setEmail(superEmail);
+      setRole(superRole);
+      updateUserProfile({
+        username: superName,
+        email: superEmail,
+        role: superRole,
+      });
+    }
+  }, [profile, updateUserProfile]);
+
+  // Sync state if store updates from Command Center or elsewhere
+  useEffect(() => {
+    if (userProfile?.username) setUsername(userProfile.username);
+    if (userProfile?.email) setEmail(userProfile.email);
+    if (userProfile?.role) setRole(userProfile.role);
+    if (userProfile?.avatarFrame) setSelectedFrame(userProfile.avatarFrame);
+  }, [userProfile]);
 
   const showToast = (text, type = 'success') => {
     setStatusMsg({ text, type });
-    setTimeout(() => setStatusMsg({ text: '', type: '' }), 3500);
+    setTimeout(() => setStatusMsg({ text: '', type: '' }), 4000);
   };
 
   const handleFileUpload = (e) => {
@@ -42,7 +331,7 @@ const Settings = () => {
     reader.onload = () => {
       if (typeof reader.result === 'string') {
         updateUserProfile({ avatarUrl: reader.result });
-        showToast('Profile picture updated!');
+        showToast('Profile picture uploaded');
       }
     };
     reader.readAsDataURL(file);
@@ -57,14 +346,16 @@ const Settings = () => {
     updateUserProfile({
       username: username.trim(),
       email: email.trim(),
+      role: role.trim(),
       avatarFrame: selectedFrame,
     });
-    showToast('User profile and avatar frame saved!');
+    showToast('Administrator profile & avatar synchronized with Command Center!');
   };
 
   const handleSavePassword = (e) => {
     e.preventDefault();
-    if (currentPassword !== userProfile.password) {
+    const storedPass = userProfile.password || 'admin123';
+    if (currentPassword !== storedPass) {
       showToast('Current password is incorrect (Default: admin123).', 'error');
       return;
     }
@@ -83,179 +374,742 @@ const Settings = () => {
     showToast('Password updated successfully!');
   };
 
-  return (
-    <div className="page-wrapper">
-      <div className="page-header">
-        <div>
-          <h1>User Settings</h1>
-          <p className="subtitle">
-            Customize your profile picture, avatar frame, username, and password.
-          </p>
-        </div>
-        {statusMsg.text && (
-          <div className={`settings-toast ${statusMsg.type}`}>
-            {statusMsg.type === 'error' ? '⚠️ ' : '✓ '}
-            {statusMsg.text}
-          </div>
-        )}
-      </div>
+  const handleResetCache = () => {
+    if (window.confirm('Reset all cached diagnostic telemetry and preferences?')) {
+      updateUserProfile(DEFAULT_CMD_USER);
+      showToast('Restored default Command Center supervisor user.');
+    }
+  };
 
-      {/* Live Profile Preview Card */}
-      <div className="ch-card" style={{ marginBottom: '22px', display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
-        <div className={`ch-avatar-wrapper frame-${selectedFrame} large`}>
+  const activeAvatar = userProfile?.avatarUrl || DEFAULT_CMD_USER.avatarUrl;
+
+  return (
+    <div className="app-container">
+      {/* Left Sidebar Navigation */}
+      <aside className="app-left">
+        <div
+          className="app-logo"
+          style={{ cursor: 'pointer', padding: '0 24px', marginBottom: '28px' }}
+          onClick={() => navigate('/')}
+        >
           <img
-            src={userProfile.avatarUrl}
-            alt="User Avatar"
-            className="ch-avatar-img"
+            src="/image/MainLogo.png"
+            height="56px"
+            alt="CyberHub Logo"
             onError={(e) => {
-              e.currentTarget.src = 'https://ui-avatars.com/api/?name=Cyber+Admin&background=ff7300&color=fff';
+              e.currentTarget.style.display = 'none';
             }}
           />
         </div>
+        <ul className="nav-list">
+          {NAV_ITEMS.map((item) => {
+            const isActive = item.path === '/settings';
+            return (
+              <li key={item.path} className={`nav-list-item ${isActive ? 'active' : ''}`}>
+                <NavLink
+                  to={item.path}
+                  className="nav-list-link"
+                  style={{ textDecoration: 'none' }}
+                >
+                  {item.renderIcon()}
+                  {item.label}
+                </NavLink>
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
 
-        <div style={{ flex: 1 }}>
-          <span className="status-pill completed">ADMINISTRATOR ACCOUNT</span>
-          <h2 style={{ margin: '8px 0 4px 0' }}>{username || userProfile.username}</h2>
-          <p style={{ margin: 0, color: '#9ca3af', fontSize: '13px' }}>
-            {email} • Active Frame:{' '}
-            <strong style={{ color: '#ff7300' }}>
-              {AVATAR_FRAMES.find((f) => f.id === selectedFrame)?.name}
-            </strong>
-          </p>
+      {/* Main Content Area */}
+      <main className="app-main">
+        <div
+          className="main-header-line"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '24px',
+          }}
+        >
+          <div>
+            <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>User & Profile Settings</h1>
+            <p style={{ margin: '4px 0 0 0', color: '#b8c4db', fontSize: '13px' }}>
+              Command Center supervisor profile, credentials, holographic frames, and dispatch alert preferences.
+            </p>
+          </div>
+          {statusMsg.text && (
+            <div className={`settings-toast ${statusMsg.type}`} style={{ animation: 'fadeIn 0.2s ease-out' }}>
+              {statusMsg.type === 'error' ? '⚠️ ' : '✓ '}
+              {statusMsg.text}
+            </div>
+          )}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label className="btn-primary" style={{ textAlign: 'center', cursor: 'pointer' }}>
-            📷 Upload Profile Picture
-            <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: 'none' }} />
-          </label>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {PRESET_AVATARS.map((preset) => (
+        {/* Current Active Profile Banner (Synchronized with Command Center) */}
+        <div
+          className="ch-card"
+          style={{
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '24px',
+            flexWrap: 'wrap',
+            background: 'linear-gradient(135deg, #051340, #01081f)',
+            border: '1px solid rgba(255, 115, 0, 0.35)',
+            borderRadius: '14px',
+            padding: '20px 24px',
+          }}
+        >
+          <div className={`ch-avatar-wrapper frame-${selectedFrame} large`}>
+            <img
+              src={activeAvatar}
+              alt="User Avatar"
+              className="ch-avatar-img"
+              onError={(e) => {
+                e.currentTarget.src = DEFAULT_CMD_USER.avatarUrl;
+              }}
+            />
+          </div>
+
+          <div style={{ flex: 1, minWidth: '220px' }}>
+            <span className="status-pill completed" style={{ fontSize: '11px', letterSpacing: '0.5px' }}>
+              COMMAND CENTER SUPERVISOR
+            </span>
+            <h2 style={{ margin: '8px 0 4px 0', fontSize: '22px' }}>{username}</h2>
+            <p style={{ margin: 0, color: '#b8c4db', fontSize: '13px' }}>
+              {role} • {email} • Active Frame:{' '}
+              <strong style={{ color: '#ff7300' }}>
+                {AVATAR_FRAMES.find((f) => f.id === selectedFrame)?.name || 'Custom'}
+              </strong>
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label className="btn-primary" style={{ textAlign: 'center', cursor: 'pointer', padding: '9px 16px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+              Upload Profile Picture
+              <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: 'none' }} />
+            </label>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              {PRESET_AVATARS.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  className="btn-small outline"
+                  onClick={() => {
+                    updateUserProfile({ avatarUrl: preset.url });
+                    showToast(`Switched avatar to ${preset.label} (synced to Command Center)`);
+                  }}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Two Column Grid: Profile Settings & Password Change */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+          {/* Card 1: Profile & Frame Selection */}
+          <form
+            className="ch-card stack-list"
+            onSubmit={handleSaveProfile}
+            style={{ background: '#01081f', borderRadius: '12px', padding: '20px', border: '1px solid rgba(255, 115, 0, 0.2)' }}
+          >
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', color: '#ff7300' }}>Command Center Supervisor Details</h3>
+
+            <div>
+              <label className="kpi-label" style={{ color: '#b8c4db', fontSize: '12px' }}>Full Name (Command Center User)</label>
+              <input
+                type="text"
+                className="ch-input"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                style={{ marginTop: '6px' }}
+              />
+            </div>
+
+            <div>
+              <label className="kpi-label" style={{ color: '#b8c4db', fontSize: '12px' }}>Email Address</label>
+              <input
+                type="email"
+                className="ch-input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{ marginTop: '6px' }}
+              />
+            </div>
+
+            <div>
+              <label className="kpi-label" style={{ color: '#b8c4db', fontSize: '12px' }}>Role / Designation</label>
+              <input
+                type="text"
+                className="ch-input"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                style={{ marginTop: '6px' }}
+              />
+            </div>
+
+            <div>
+              <label className="kpi-label" style={{ color: '#b8c4db', fontSize: '12px', marginBottom: '10px', display: 'block' }}>
+                Select Holographic Avatar Frame
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '8px' }}>
+                {AVATAR_FRAMES.map((frame) => (
+                  <div
+                    key={frame.id}
+                    onClick={() => {
+                      setSelectedFrame(frame.id);
+                      updateUserProfile({ avatarFrame: frame.id });
+                      showToast(`Avatar frame updated to ${frame.name} (synced across Command Center)!`);
+                    }}
+                    className={`frame-option-card ${selectedFrame === frame.id ? 'selected' : ''}`}
+                    style={{
+                      padding: '8px 10px',
+                      background: selectedFrame === frame.id ? 'rgba(255, 115, 0, 0.15)' : '#051340',
+                      border: selectedFrame === frame.id ? '1px solid #ff7300' : '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <div className={`ch-avatar-wrapper frame-${frame.id} small`}>
+                      <img
+                        src={activeAvatar}
+                        alt={frame.name}
+                        className="ch-avatar-img"
+                        onError={(e) => {
+                          e.currentTarget.src = DEFAULT_CMD_USER.avatarUrl;
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '12px' }}>{frame.name}</div>
+                      <div style={{ fontSize: '10.5px', color: '#9ca3af' }}>{frame.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button type="submit" className="btn-primary" style={{ marginTop: '8px' }}>
+              Save
+            </button>
+          </form>
+
+          {/* Card 2: Security & Password Update */}
+          <form
+            className="ch-card stack-list"
+            onSubmit={handleSavePassword}
+            style={{ background: '#01081f', borderRadius: '12px', padding: '20px', border: '1px solid rgba(255, 115, 0, 0.2)' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h3 style={{ margin: 0, fontSize: '16px', color: '#ff7300' }}>Authentication & Security</h3>
               <button
-                key={preset.label}
                 type="button"
                 className="btn-small outline"
-                onClick={() => {
-                  updateUserProfile({ avatarUrl: preset.url });
-                  showToast(`Avatar set to ${preset.label}`);
-                }}
+                onClick={() => setShowPasswords((p) => !p)}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}
               >
-                {preset.label}
+                {showPasswords ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                    <span>Hide</span>
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <span>Show</span>
+                  </>
+                )}
               </button>
-            ))}
-          </div>
-        </div>
-      </div>
+            </div>
 
-      <div className="two-col-grid">
-        {/* Username & Avatar Frame Form */}
-        <form className="ch-card stack-list" onSubmit={handleSaveProfile}>
-          <h3 style={{ margin: 0 }}>Username & Avatar Frame</h3>
+            <div>
+              <label className="kpi-label" style={{ color: '#b8c4db', fontSize: '12px' }}>
+                Current Password <span style={{ color: '#ff9f43' }}>(Default: admin123)</span>
+              </label>
+              <input
+                type={showPasswords ? 'text' : 'password'}
+                className="ch-input"
+                placeholder="Enter current password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                style={{ marginTop: '6px' }}
+              />
+            </div>
 
-          <div>
-            <label className="kpi-label">Username</label>
-            <input
-              type="text"
-              className="ch-input"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
+            <div>
+              <label className="kpi-label" style={{ color: '#b8c4db', fontSize: '12px' }}>New Password</label>
+              <input
+                type={showPasswords ? 'text' : 'password'}
+                className="ch-input"
+                placeholder="Minimum 6 characters"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                style={{ marginTop: '6px' }}
+              />
+            </div>
 
-          <div>
-            <label className="kpi-label">Email Address</label>
-            <input
-              type="email"
-              className="ch-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+            <div>
+              <label className="kpi-label" style={{ color: '#b8c4db', fontSize: '12px' }}>Confirm New Password</label>
+              <input
+                type={showPasswords ? 'text' : 'password'}
+                className="ch-input"
+                placeholder="Re-enter new password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                style={{ marginTop: '6px' }}
+              />
+            </div>
 
-          <div>
-            <label className="kpi-label" style={{ marginBottom: '10px' }}>Choose Avatar Frame</label>
-            <div className="frame-selector-grid">
-              {AVATAR_FRAMES.map((frame) => (
-                <div
-                  key={frame.id}
-                  onClick={() => setSelectedFrame(frame.id)}
-                  className={`frame-option-card ${selectedFrame === frame.id ? 'selected' : ''}`}
+            <button type="submit" className="btn-primary" style={{ marginTop: '8px' }}>
+              Update Password
+            </button>
+
+            {/* Notification and Preferences Section */}
+            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <h4 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#b8c4db' }}>Dispatch Preferences</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12.5px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={autoDispatch}
+                    onChange={(e) => setAutoDispatch(e.target.checked)}
+                    style={{ accentColor: '#ff7300' }}
+                  />
+                  <span>AI Smart Dispatch Auto-Assignment</span>
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12.5px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={slaAlerts}
+                    onChange={(e) => setSlaAlerts(e.target.checked)}
+                    style={{ accentColor: '#ff7300' }}
+                  />
+                  <span>Critical SLA Response Threshold Warnings (30 min)</span>
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12.5px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={whatsAppSync}
+                    onChange={(e) => setWhatsAppSync(e.target.checked)}
+                    style={{ accentColor: '#ff7300' }}
+                  />
+                  <span>Customer WhatsApp ETA & Invoice Notifications</span>
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12.5px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={soundEffects}
+                    onChange={(e) => setSoundEffects(e.target.checked)}
+                    style={{ accentColor: '#ff7300' }}
+                  />
+                  <span>Terminal Audio Chimes & Alert Tones</span>
+                </label>
+              </div>
+
+              <div style={{ marginTop: '16px', display: 'flex', gap: '10px' }}>
+                <button
+                  type="button"
+                  className="btn-small outline"
+                  onClick={handleResetCache}
+                  style={{ color: '#ff6b81', borderColor: 'rgba(255, 71, 87, 0.4)' }}
                 >
-                  <div className={`ch-avatar-wrapper frame-${frame.id} small`}>
-                    <img
-                      src={userProfile.avatarUrl}
-                      alt={frame.name}
-                      className="ch-avatar-img"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://ui-avatars.com/api/?name=CA&background=051340&color=fff';
+                  Reset to Command Center Defaults
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Navigation Keyboard Shortcuts (Keybinds 1 to 7) */}
+          <div
+            className="ch-card"
+            style={{
+              marginBottom: '24px',
+              background: 'linear-gradient(135deg, #051340, #01081f)',
+              border: '1px solid rgba(255, 115, 0, 0.35)',
+              borderRadius: '12px',
+              padding: '24px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '20px' }}>⌨️</span>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '18px', color: '#ff7300', fontWeight: 700 }}>
+                    Navigation Keybindings (Quick Jump 1 to 7)
+                  </h3>
+                  <p style={{ margin: '2px 0 0 0', fontSize: '12.5px', color: '#94a3b8' }}>
+                    Press keys 1 to 7 anywhere outside text fields to switch screens instantly. Key 7 opens User Settings.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn-small outline"
+                onClick={handleResetKeybinds}
+                title="Reset all navigation keybindings to defaults (1 to 7)"
+                style={{ color: '#ff7300', borderColor: 'rgba(255, 115, 0, 0.4)' }}
+              >
+                Reset to Defaults (1 - 7)
+              </button>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                gap: '12px',
+                marginTop: '16px',
+              }}
+            >
+              {navKeybinds.map((kb) => (
+                <div
+                  key={kb.id}
+                  style={{
+                    background: '#040d2d',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '8px',
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    transition: 'border-color 0.15s ease',
+                  }}
+                >
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {kb.label}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#64748b', fontFamily: 'monospace' }}>
+                      {kb.path}
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '11px', color: '#94a3b8' }}>Key:</span>
+                    <input
+                      type="text"
+                      maxLength={2}
+                      value={kb.key}
+                      onChange={(e) => handleKeybindChange(kb.id, e.target.value)}
+                      title={`Shortcut key for ${kb.label}. Press a key to rebind.`}
+                      style={{
+                        width: '42px',
+                        height: '34px',
+                        textAlign: 'center',
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        color: '#ff7300',
+                        background: '#01081f',
+                        border: '1.5px solid rgba(255, 115, 0, 0.45)',
+                        borderRadius: '6px',
+                        textTransform: 'uppercase',
+                        fontFamily: 'monospace',
+                        boxShadow: '0 0 8px rgba(255, 115, 0, 0.15)',
                       }}
                     />
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '12.5px' }}>{frame.name}</div>
-                    <div style={{ fontSize: '11px', color: '#9ca3af' }}>{frame.desc}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <button type="submit" className="btn-primary">
-            Save Username & Frame
-          </button>
-        </form>
-
-        {/* Password Change Form */}
-        <form className="ch-card stack-list" onSubmit={handleSavePassword}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0 }}>Change Password</h3>
-            <button
-              type="button"
-              className="btn-small outline"
-              onClick={() => setShowPasswords((p) => !p)}
+          {/* Staff Administration & Invites (Restricted to Admins / Super Admins) */}
+          {canInvite && (
+            <div
+              className="ch-card"
+              style={{
+                marginTop: '24px',
+                background: 'rgba(7, 21, 59, 0.65)',
+                border: '1px solid rgba(0, 229, 255, 0.25)',
+                borderRadius: '12px',
+                padding: '24px',
+              }}
             >
-              {showPasswords ? '🙈 Hide' : '👁️ Show'}
-            </button>
-          </div>
+              <h3 style={{ margin: '0 0 6px 0', fontSize: '18px', color: '#00e5ff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span>Invite Staff Member</span>
+              </h3>
+              <p style={{ margin: '0 0 18px 0', fontSize: '13px', color: '#94a3b8' }}>
+                Send an official invitation email via Supabase Auth Admin. Assign initial role and branch scope.
+              </p>
 
-          <div>
-            <label className="kpi-label">Current Password (Default: admin123)</label>
-            <input
-              type={showPasswords ? 'text' : 'password'}
-              className="ch-input"
-              placeholder="Enter current password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+              <form onSubmit={handleInviteSubmit}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>
+                      Staff Email Address
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={inviteEmail}
+                      onChange={(e) => setInviteEmail(e.target.value)}
+                      placeholder="technician@cyberhub.com"
+                      className="form-input"
+                      style={{ width: '100%', boxSizing: 'border-box' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={inviteName}
+                      onChange={(e) => setInviteName(e.target.value)}
+                      placeholder="Ahmad bin Ismail"
+                      className="form-input"
+                      style={{ width: '100%', boxSizing: 'border-box' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>
+                      Assigned Role
+                    </label>
+                    <select
+                      value={inviteRole}
+                      onChange={(e) => setInviteRole(e.target.value)}
+                      className="form-input"
+                      style={{ width: '100%', boxSizing: 'border-box' }}
+                    >
+                      <option value="technician">Technician (Field Specialist)</option>
+                      <option value="hr_manager">HR Manager (Certifications & Staff)</option>
+                      <option value="executive">Executive (Read-Only Analytics)</option>
+                      {profile?.is_super_admin && <option value="admin">Administrator</option>}
+                      {profile?.is_super_admin && <option value="super_admin">Super Administrator</option>}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '6px' }}>
+                      Branch Scope
+                    </label>
+                    <select
+                      value={inviteBranch}
+                      onChange={(e) => setInviteBranch(e.target.value)}
+                      className="form-input"
+                      style={{ width: '100%', boxSizing: 'border-box' }}
+                    >
+                      <option value="">Global / All Branches</option>
+                      {branchesList.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name} ({b.city})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={inviteLoading}
+                  className="btn-save"
+                  style={{ padding: '10px 20px', fontSize: '13px' }}
+                >
+                  {inviteLoading ? 'Sending Invitation...' : 'Send Staff Invitation'}
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* Right Activity & Dispatch Feed (Matches Command Center exactly) */}
+      <aside className="app-right">
+        <div className="profile-box">
+          <div className={`profile-photo-wrapper frame-${selectedFrame}`}>
+            <img
+              src={activeAvatar}
+              alt="profile"
+              onError={(e) => {
+                e.currentTarget.src = DEFAULT_CMD_USER.avatarUrl;
+              }}
             />
           </div>
-
-          <div>
-            <label className="kpi-label">New Password</label>
-            <input
-              type={showPasswords ? 'text' : 'password'}
-              className="ch-input"
-              placeholder="Minimum 6 characters"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="kpi-label">Confirm New Password</label>
-            <input
-              type={showPasswords ? 'text' : 'password'}
-              className="ch-input"
-              placeholder="Re-enter new password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-
-          <button type="submit" className="btn-primary">
-            Update Password
+          <p className="profile-text">{username}</p>
+          <p className="profile-subtext">{role}</p>
+          <button
+            className="btn-logout"
+            onClick={async () => {
+              await signOut('user_initiated');
+              navigate('/login');
+            }}
+            title="Log out of CyberHub"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="feather feather-log-out"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Log Out
           </button>
-        </form>
-      </div>
+        </div>
+
+        <div className="app-right-content">
+          <div className="app-right-section">
+            <div className="app-right-section-header">
+              <h2>Customer Support Feed</h2>
+              <span className="notification-active">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="feather feather-message-square"
+                >
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+              </span>
+            </div>
+            <div className="message-line">
+              <img src="https://images.unsplash.com/photo-1562159278-1253a58da141?auto=format&fit=crop&w=300&q=80" alt="profile" />
+              <div className="message-text-wrapper">
+                <p className="message-text">David Lee</p>
+                <p className="message-subtext">Approved AI quote for inverter replacement.</p>
+              </div>
+            </div>
+            <div className="message-line">
+              <img src="https://images.unsplash.com/photo-1604004555489-723a93d6ce74?auto=format&fit=crop&w=300&q=80" alt="profile" />
+              <div className="message-text-wrapper">
+                <p className="message-text">Jessica Wong</p>
+                <p className="message-subtext">Uploaded video diagnostics of leaking drum.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="app-right-section">
+            <div className="app-right-section-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h2>System Security Logs</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowAnomalyDrawer(true)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    fontSize: '11px',
+                    padding: '3px 8px',
+                    borderRadius: '4px',
+                    background: 'rgba(239, 68, 68, 0.15)',
+                    border: '1px solid rgba(239, 68, 68, 0.4)',
+                    color: '#ef4444',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  Anomaly Queue
+                </button>
+                <span className="notification-active">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="feather feather-bell"
+                  >
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div className="activity-line">
+              <span className="activity-icon applicant">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="feather feather-check-circle"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </span>
+              <div className="activity-text-wrapper">
+                <p className="activity-text">Active session authenticated for <strong>Tan Kia Yu</strong>.</p>
+              </div>
+            </div>
+            <div className="activity-line">
+              <span className="activity-icon draft">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="feather feather-map-pin"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </span>
+              <div className="activity-text-wrapper">
+                <p className="activity-text">Real-time GPS dispatch connected.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Admin Anomaly Detection Modal (D10) */}
+      <AdminAnomalyDrawer
+        isOpen={showAnomalyDrawer}
+        onClose={() => setShowAnomalyDrawer(false)}
+      />
     </div>
   );
 };
